@@ -3,45 +3,39 @@ import random
 import requests
 
 
-def receive_temp_vm_2(request, client_socket):    
+def receive_temp_vm_2(request, client_socket, k):    
     api_url = 'http://127.0.0.1:5000'
 
-    k = 5
-
     if request == "DEC01":
-        k += -1
         ADCval = random.randrange(0, 128+1)
         t2 = k * ADCval + 5
         
-        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
-        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        print(f"VM-01 Request: {request} >> T2 = {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> T2 = {k} * {ADCval} + 5 = {t2} ".encode("utf-8")
         client_socket.send(response)
 
     elif request == "DEC02":
-        k += -2
         ADCval = random.randrange(0, 128+1)
         t2 = k * ADCval + 5
         
-        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
-        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        print(f"VM-01 Request: {request} >> T2 = {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> T2 = {k} * {ADCval} + 5 = {t2} ".encode("utf-8")
         client_socket.send(response)
 
     elif request == "INC01":
-        k += 1
         ADCval = random.randrange(0, 128+1)
         t2 = k * ADCval + 5
         
-        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
-        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        print(f"VM-01 Request: {request} >> T2 = {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> T2 = {k} * {ADCval} + 5 = {t2} ".encode("utf-8")
         client_socket.send(response)
 
     elif request == "INC02":
-        k += 2
         ADCval = random.randrange(0, 128+1)
         t2 = k * ADCval + 5
         
-        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
-        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        print(f"VM-01 Request: {request} >> T2 = {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> T2 = {k} * {ADCval} + 5 = {t2} ".encode("utf-8")
         client_socket.send(response)
 
     temperature_json = {
@@ -55,9 +49,9 @@ def receive_temp_vm_2(request, client_socket):
             # headers={"Content-Type": "application/json"},
             json=temperature_json,
         )
+        return k
     except:
-        pass
-
+        return k
 
 def run_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -72,21 +66,27 @@ def run_server():
     client_socket, client_address = server.accept()
     print(f"Accepted connection from {client_address[0]}:{client_address[1]}")
     
+    k = 5
+
     while True:
         request = client_socket.recv(1024)
         request = request.decode("utf-8")
 
         if request == "DEC01":
-            receive_temp_vm_2(request, client_socket)
+            k += -1
+            receive_temp_vm_2(request, client_socket, k)
 
         elif request == "DEC02":
-            receive_temp_vm_2(request, client_socket)
+            k += -2
+            receive_temp_vm_2(request, client_socket, k)
 
         elif request == "INC01":
-            receive_temp_vm_2(request, client_socket)
+            k += 1
+            receive_temp_vm_2(request, client_socket, k)
 
         elif request == "INC02":
-            receive_temp_vm_2(request, client_socket)
+            k += 2
+            receive_temp_vm_2(request, client_socket, k)
 
         elif request.lower() == "close":
             client_socket.send("closed".encode("utf-8"))
