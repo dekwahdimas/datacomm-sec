@@ -1,9 +1,65 @@
 import socket
 import random
 import requests
-import json
 
-def receiveTemp2():
+
+def receive_temp_vm_2(request, client_socket):    
+    api_url = 'http://127.0.0.1:5000'
+
+    k = 5
+
+    if request == "DEC01":
+        k += -1
+        ADCval = random.randrange(0, 128+1)
+        t2 = k * ADCval + 5
+        
+        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        client_socket.send(response)
+
+    elif request == "DEC02":
+        k += -2
+        ADCval = random.randrange(0, 128+1)
+        t2 = k * ADCval + 5
+        
+        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        client_socket.send(response)
+
+    elif request == "INC01":
+        k += 1
+        ADCval = random.randrange(0, 128+1)
+        t2 = k * ADCval + 5
+        
+        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        client_socket.send(response)
+
+    elif request == "INC02":
+        k += 2
+        ADCval = random.randrange(0, 128+1)
+        t2 = k * ADCval + 5
+        
+        print(f"VM-01 Request: {request} >> {k} * {ADCval} + 5 = {t2}")
+        response = f"{request} >> {k} * {ADCval} + 5 = {t2}".encode("utf-8")
+        client_socket.send(response)
+
+    temperature_json = {
+        't2': t2,
+    }
+
+    try:
+        # POST
+        jsonResponse = requests.post(
+            api_url + '/temperature_2',
+            # headers={"Content-Type": "application/json"},
+            json=temperature_json,
+        )
+    except:
+        pass
+
+
+def run_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     server_ip = "127.0.0.1"
@@ -15,73 +71,33 @@ def receiveTemp2():
 
     client_socket, client_address = server.accept()
     print(f"Accepted connection from {client_address[0]}:{client_address[1]}")
-
-    api_url = 'http://127.0.0.1:5000'
-
-    k = 5
     
     while True:
         request = client_socket.recv(1024)
         request = request.decode("utf-8")
 
         if request == "DEC01":
-            k += -1
-            ADCval = random.randrange(0, 128+1)
-            t2 = k * ADCval + 5
-            
-            print(f"VM-01 Request: {request}")
-            response = f"{request}: {t2} = {k} * {ADCval} + 5".encode("utf-8")
-            client_socket.send(response)
+            receive_temp_vm_2(request, client_socket)
 
         elif request == "DEC02":
-            k += -2
-            ADCval = random.randrange(0, 128+1)
-            t2 = k * ADCval + 5
-            
-            print(f"VM-01 Request: {request}")
-            response = f"{request}: {t2} = {k} * {ADCval} + 5".encode("utf-8")
-            client_socket.send(response)
+            receive_temp_vm_2(request, client_socket)
 
         elif request == "INC01":
-            k += 1
-            ADCval = random.randrange(0, 128+1)
-            t2 = k * ADCval + 5
-            
-            print(f"VM-01 Request: {request}")
-            response = f"{request}: {t2} = {k} * {ADCval} + 5".encode("utf-8")
-            client_socket.send(response)
+            receive_temp_vm_2(request, client_socket)
 
         elif request == "INC02":
-            k += 2
-            ADCval = random.randrange(0, 128+1)
-            t2 = k * ADCval + 5
-            
-            print(f"VM-01 Request: {request}")
-            response = f"{request}: {t2} = {k} * {ADCval} + 5".encode("utf-8")
-            client_socket.send(response)
+            receive_temp_vm_2(request, client_socket)
 
         elif request.lower() == "close":
             client_socket.send("closed".encode("utf-8"))
             break
+
         else:
             client_socket.send("Wrong input".encode("utf-8"))
-            t2 = "Failed to decrease/increase the value of k"
-
-        temperature_json = {
-            't2': t2,
-        }
-
-        try:
-            jsonResponse = requests.post(
-                api_url + '/temperature_2',
-                json = json.dumps(temperature_json),
-            )
-        except:
-            pass
 
     client_socket.close()
     print("Connection to client closed")
     server.close()
 
-# run_server()
-receiveTemp2()
+
+run_server()
