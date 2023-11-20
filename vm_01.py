@@ -1,7 +1,7 @@
 import socket
 import random
 import requests
-import json
+
 
 def run_client():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,7 +14,7 @@ def run_client():
     api_url = 'http://127.0.0.1:5000'
 
     while True:
-        msg = input("Enter message: ")
+        msg = input("Enter parameter of 'k': ").upper()
 
         random_num = random.randrange(-1, 1+1) # random number from -1 to 1
         t1 = random_num * 5 + 40
@@ -26,7 +26,7 @@ def run_client():
         try:
             jsonResponse = requests.post(
                 api_url + '/temperature_1',
-                json = json.dumps(temperature_json),
+                json = temperature_json,
             )
         except:
             pass
@@ -43,5 +43,6 @@ def run_client():
 
     client.close()
     print("Connection to server closed")
+
 
 run_client()
