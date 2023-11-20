@@ -23,10 +23,13 @@ def run_client():
             't1': t1,
         }
 
-        jsonResponse = requests.post(
-            api_url + '/temperature_1',
-            json = json.dumps(temperature_json),
-        )
+        try:
+            jsonResponse = requests.post(
+                api_url + '/temperature_1',
+                json = json.dumps(temperature_json),
+            )
+        except:
+            pass
 
         client.send(msg.encode("utf-8")[:1024])
 
@@ -40,7 +43,5 @@ def run_client():
 
     client.close()
     print("Connection to server closed")
-
-    return jsonResponse
 
 run_client()

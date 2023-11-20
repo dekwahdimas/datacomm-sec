@@ -65,21 +65,23 @@ def receiveTemp2():
             break
         else:
             client_socket.send("Wrong input".encode("utf-8"))
+            t2 = "Failed to decrease/increase the value of k"
 
         temperature_json = {
             't2': t2,
         }
 
-        jsonResponse = requests.post(
-            api_url + '/temperature_2',
-            json = json.dumps(temperature_json),
-        )
+        try:
+            jsonResponse = requests.post(
+                api_url + '/temperature_2',
+                json = json.dumps(temperature_json),
+            )
+        except:
+            pass
 
     client_socket.close()
     print("Connection to client closed")
     server.close()
-
-    return jsonResponse
 
 # run_server()
 receiveTemp2()
