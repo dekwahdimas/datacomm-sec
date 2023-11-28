@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask App</title>
+    <title>Temperature Calculation | VM-03</title>
 </head>
 <body>
-    
+    temperature_3 = temperature_1 - temperature_2
+    <br>
+    temperature_3 = {{ context['t1']  }} - {{ context['t2'] }}
+    <br>
+    temperature_3 = {{ context['t3'] }}
 </body>
 </html>
