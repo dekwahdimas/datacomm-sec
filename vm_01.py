@@ -3,13 +3,14 @@ import random
 import requests
 
 
-def run_client():
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# temp is an abbreviation for temperature
+def run_temp_sensor_01():
+    temp_sensor_01 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    server_ip = "127.0.0.1"
-    server_port = 8000  
+    temp_sensor_02_ip = "127.0.0.1"
+    temp_sensor_02_port = 8000  
 
-    client.connect((server_ip, server_port))
+    temp_sensor_01.connect((temp_sensor_02_ip, temp_sensor_02_port))
 
     api_url = 'http://127.0.0.1:5000'
 
@@ -31,9 +32,9 @@ def run_client():
         except:
             pass
 
-        client.send(msg.encode("utf-8")[:1024])
+        temp_sensor_01.send(msg.encode("utf-8")[:1024])
 
-        response = client.recv(1024)
+        response = temp_sensor_01.recv(1024)
         response = response.decode("utf-8")
 
         if response.lower() == "closed":
@@ -41,8 +42,8 @@ def run_client():
 
         print(f"VM-02 Response: {response}")
 
-    client.close()
-    print("Connection to server closed")
+    temp_sensor_01.close()
+    print("Connection to temp_sensor_02 closed")
 
 
-run_client()
+run_temp_sensor_01()
